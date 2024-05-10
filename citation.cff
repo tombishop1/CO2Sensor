@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this hardware, please also cite the original paper from which this work was derived."
+preferred-citation:
+  authors:
+  - family-names: "Brown"
+    given-names: "S. L."
+  - family-names: "Goulsbra"
+    given-names: "C. S."
+  - family-names: "Evans"
+    given-names: "M. G."
+  - family-names: "Heath"
+    given-names: "T."
+  - family-names: "Shuttleworth"
+    given-names: "E."
+  title: "Low cost CO2 sensing: A simple microcontroller approach with calibration and field use"
+  journal: "Hardware X"
+  issue: "e00136"  
+  doi: 10.1016/j.ohx.2020.e00136
+  date-released: 2020-10-01
+  url: "https://doi.org/10.1016/j.ohx.2020.e00136"

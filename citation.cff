@@ -1,6 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this hardware, please also cite the original paper from which this work was derived."
 preferred-citation:
+  type: article
   authors:
   - family-names: "Brown"
     given-names: "S. L."
@@ -16,5 +17,5 @@ preferred-citation:
   journal: "Hardware X"
   issue: "e00136"  
   doi: 10.1016/j.ohx.2020.e00136
-  date-released: 2020-10-01
+  year: 2020
   url: "https://doi.org/10.1016/j.ohx.2020.e00136"

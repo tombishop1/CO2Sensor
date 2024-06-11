@@ -60,7 +60,7 @@ Pushbutton: Most push buttons are reversible in direction. Refer to https://www.
 #include <SD.h> //SD card library
 #include <Wire.h> //library for connecting microprocessors together
 #include <Adafruit_MPL3115A2.h> //MPL3115A2 library
-#include <kSeries.h> //K30 sensor library
+#include <KSeries.h> //K30 sensor library
 #include "RTClib.h" //DS3231 RTC library. You must use the example sketch DS3231 to set the tme before deployment.
 
 

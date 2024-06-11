@@ -41,6 +41,9 @@ SenseAir CO2 Engine K30:  TxD - 7
                           G0 - GND
                           See Figure 2 in the Datasheet and Manual for board pinouts.
 
+Two wire component:   GND wire - GND (SCA 2nd hole)
+                      Power - Digital 5 (SDA 1st hole) or other free digital pin
+  
 Pushbutton: Most push buttons are reversible in direction. Refer to https://www.arduino.cc/en/Tutorial/StateChangeDetection or paper supplementary for further instructions.               
                            
 */
@@ -49,7 +52,7 @@ Pushbutton: Most push buttons are reversible in direction. Refer to https://www.
 #include <SD.h> //SD card library
 #include <Wire.h> //library for connecting microprocessors together
 #include <Adafruit_MPL3115A2.h> //MPL3115A2 library
-#include <kSeries.h> //K30 sensor library
+#include <KSeries.h> //K30 sensor library
 #include "RTClib.h" //DS3231 RTC library. You must use the example sketch DS3231 to set the tme before deployment.
 
 Adafruit_MPL3115A2 baro = Adafruit_MPL3115A2(); //define this board in the code as 'baro'.
@@ -57,6 +60,8 @@ int pinCS = 10; // Pin 10 on Arduino Uno is set as the ChipSelect pin.
 kSeries K_30(6,7); // Create K30 instance on pin 6 & 7.
 File myFile; //Define the file to write to. 
 RTC_DS3231 rtc; //define the clock board as 'rtc'.
+int twowire = 5; // the pin the LED is connected to
+
 const int buttonPin = 8; //the number of the pushbutton pin
 
 int buttonPushCounter = 0;   //counter for the number of button presses
@@ -73,6 +78,9 @@ void setup() { //Begin setup section of code.
   baro.begin();
   
   myFile = SD.open("datalog.txt", FILE_WRITE); // Open up the file we're going to log to.
+
+  pinMode(twowire, OUTPUT); // Declare the two wire component as an output
+
 } //End setup part of code.
 
 void loop() { //Begin repeating section of code.
@@ -90,7 +98,7 @@ void loop() { //Begin repeating section of code.
    delay(100); // Delay to avoid bouncing
  
 //Show on screen the logged data. Useful to check components are functioning correctly. Remove /* and */ on lines 93 and 118 to execute.
-/* 
+ 
   Serial.print("Counter: ");
   Serial.println(buttonPushCounter);  
  
@@ -115,7 +123,15 @@ void loop() { //Begin repeating section of code.
   Serial.print(baro.getPressure()); Serial.println(" Pascals"); //print on screen the pressure in kilo Pascals.
   Serial.print(baro.getAltitude()); Serial.println(" meters"); //print on screen the altitude in metres.
   Serial.print(baro.getTemperature()); Serial.println("*C"); //print on screen the temperature in degrees Celsius.
- */   
+
+//Use an IF control structure to switch two wire component on or off
+  if (K_30.getCO2('p')>=700){
+    digitalWrite(twowire, HIGH);} // Turn the two wire component on
+    else{
+    digitalWrite(twowire, LOW); // Turn the two wire component off
+  }
+  
+    
 //Use an IF control structure to define when measurements are taken.
   if (now.second()==0 || now.second()==10 || now.second()==20 || now.second()==30 || now.second()==40 || now.second()==50) {
   /* log data when the time is at these values. "==" means take records at exactly this time. "||" is equivalent to "or" and 
@@ -146,6 +162,6 @@ void loop() { //Begin repeating section of code.
       myFile.print(now.second(), DEC);
       myFile.print(',');
       myFile.close(); //close file on MicroSD card
-      delay(4000); //delay to avoid repeat measurement within same second. X000 milliseconds == X seconds.
+      delay(9000); //delay to avoid repeat measurement within same second. X000 milliseconds == X seconds.
   } //end of IF control structure. */
 } //End repeating section of code. This will repeat until power is lost.

@@ -1,3 +1,6 @@
+//ALL 'now.' DECLARATIONS HAVE BEEN CHANGED TO 'dt.' DECLARATIONS
+
+
   /*
 Created by Sarah Louise Brown @ University of Manchester Geography Department as part of a submission for a doctoral degree.
 First created on 11/08/2017.
@@ -53,7 +56,10 @@ Pushbutton: Most push buttons are reversible in direction. Refer to https://www.
 #include <Wire.h> //library for connecting microprocessors together
 #include <Adafruit_MPL3115A2.h> //MPL3115A2 library
 #include <KSeries.h> //K30 sensor library
-#include "RTClib.h" //DS3231 RTC library. You must use the example sketch DS3231 to set the tme before deployment.
+//EDIT
+#include <RTClib.h> //DS3231 RTC library. You must use the example sketch DS3231 to set the time before deployment.
+//EDIT
+
 
 Adafruit_MPL3115A2 baro = Adafruit_MPL3115A2(); //define this board in the code as 'baro'.
 int pinCS = 10; // Pin 10 on Arduino Uno is set as the ChipSelect pin.
@@ -77,6 +83,14 @@ void setup() { //Begin setup section of code.
   SD.begin();
   baro.begin();
   
+  //EDIT
+  rtc.begin();
+    DateTime newDT = DateTime(2024, 7, 30, 13, 54, 0);
+  /* Pushing that date/time to the RTC */
+  rtc.adjust(newDT);
+  Serial.println("setup done");
+  //EDIT
+  
   myFile = SD.open("datalog.txt", FILE_WRITE); // Open up the file we're going to log to.
 
   pinMode(twowire, OUTPUT); // Declare the two wire component as an output
@@ -84,7 +98,7 @@ void setup() { //Begin setup section of code.
 } //End setup part of code.
 
 void loop() { //Begin repeating section of code.
- DateTime now = rtc.now(); //Define the time now
+ DateTime dt = rtc.now(); //Define the time now
 
 //Push button counter
  buttonState = digitalRead(buttonPin); //read the state of the pushbutton value:
@@ -102,17 +116,17 @@ void loop() { //Begin repeating section of code.
   Serial.print("Counter: ");
   Serial.println(buttonPushCounter);  
  
-  Serial.print(now.year(), DEC); //now showing data from DS3231 RTC. 'DEC' indicates to show the data in decimal format (as opposed to e.g. binary).
+  Serial.print(dt.year(), DEC); //now showing data from DS3231 RTC. 'DEC' indicates to show the data in decimal format (as opposed to e.g. binary).
   Serial.print('/'); //used to show date in format DD/MM/YYYY.
-  Serial.print(now.month(), DEC);
+  Serial.print(dt.month(), DEC);
   Serial.print('/');
-  Serial.print(now.day(), DEC);
+  Serial.print(dt.day(), DEC);
   Serial.print("  "); //Create on screen gap between date and time.
-  Serial.print(now.hour(), DEC);
+  Serial.print(dt.hour(), DEC);
   Serial.print(':'); //used to show time in format HH:MM:SS.
-  Serial.print(now.minute(), DEC);
+  Serial.print(dt.minute(), DEC);
   Serial.print(':');
-  Serial.print(now.second(), DEC);
+  Serial.print(dt.second(), DEC);
   Serial.println();  //start new line in serial monitor.
  
 // Show on screen the K30 data. Useful to track what is happening to the CO2 sensor.
@@ -133,10 +147,10 @@ void loop() { //Begin repeating section of code.
   
     
 //Use an IF control structure to define when measurements are taken.
-  if (now.second()==0 || now.second()==10 || now.second()==20 || now.second()==30 || now.second()==40 || now.second()==50) {
+  if (dt.second()==0 || dt.second()==10 || dt.second()==20 || dt.second()==30 || dt.second()==40 || dt.second()==50) {
   /* log data when the time is at these values. "==" means take records at exactly this time. "||" is equivalent to "or" and 
   measurements will be recorded when the second equals any of these values. If measurements needed to be taken at e.g. 0 and 
-  30 seconds, this would change to (now.second()==0 || now.second()==30).
+  30 seconds, this would change to (dt.second()==0 || dt.second()==30).
   All data will be called datalog.txt, a comma delimited file. 
   Once data collection has ended,copy this file to permanent storage. */
     myFile = SD.open("datalog.txt", FILE_WRITE); //file name will be datalog
@@ -151,15 +165,15 @@ void loop() { //Begin repeating section of code.
       myFile.print(",");
       myFile.print(K_30.getCO2('p')); //now logging CO2 in ppm from K30.
       myFile.print(",");
-      myFile.print(now.month(), DEC);//now logging from DS3231 RTC.  'DEC' indicates to log the data in decimal format.
+      myFile.print(dt.month(), DEC);//now logging from DS3231 RTC.  'DEC' indicates to log the data in decimal format.
       myFile.print(",");
-      myFile.print(now.day(), DEC);
+      myFile.print(dt.day(), DEC);
       myFile.print(",");
-      myFile.print(now.hour(), DEC);
+      myFile.print(dt.hour(), DEC);
       myFile.print(',');
-      myFile.print(now.minute(), DEC);
+      myFile.print(dt.minute(), DEC);
       myFile.print(','); 
-      myFile.print(now.second(), DEC);
+      myFile.print(dt.second(), DEC);
       myFile.print(',');
       myFile.close(); //close file on MicroSD card
       delay(9000); //delay to avoid repeat measurement within same second. X000 milliseconds == X seconds.

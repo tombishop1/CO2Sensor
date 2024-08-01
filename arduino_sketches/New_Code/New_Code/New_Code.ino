@@ -140,7 +140,7 @@ void loop() {
   if (dt.second()==0 || dt.second()==10 || dt.second()==20 || dt.second()==30 || dt.second()==40 || dt.second()==50) {
     myFile = SD.open("datalog.csv", FILE_WRITE); // file name will be datalog
       myFile.write("\n");
-      myFile.print(baro.getPressure()); // pressure (mbar) from MPL3115A2
+      myFile.print(baro.getPressure()); // pressure (kPa) from MPL3115A2
       myFile.print(","); 
       myFile.print(buttonPushCounter, DEC); // button state (n)
       myFile.print(",");
